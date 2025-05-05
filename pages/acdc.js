@@ -16,7 +16,8 @@ export default function ACDCPage() {
       if (error) {
         console.error('Erreur de chargement des billets:', error)
       } else {
-        setBillets(data)
+        console.log('DATA FROM SUPABASE:', data)
+setBillets(data)
       }
     }
 
