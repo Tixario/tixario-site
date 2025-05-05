@@ -3,6 +3,10 @@ import { supabase } from '../lib/supabaseClient'
 
 export default function ACDCPage() {
   console.log("🎯 Composant ACDCPage rendu");
+console.log("🔐 Supabase URL:", process.env.NEXT_PUBLIC_SUPABASE_URL)
+console.log("🔐 Supabase Key:", process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)
+console.log("📡 Supabase client:", supabase)
+
   const [billets, setBillets] = useState([])
   const [filtre, setFiltre] = useState('')
 
