@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabaseClient'
 
 export default function ACDCPage() {
+  console.log("🎯 Composant ACDCPage rendu");
   const [billets, setBillets] = useState([])
   const [filtre, setFiltre] = useState('')
 
