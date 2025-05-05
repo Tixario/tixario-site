@@ -41,5 +41,10 @@ export default function ACDCPage() {
       />
 
       <ul>
-        {billetsFiltres.map((billet) => (
-          <li key={billet.id_b_
+  {billetsFiltres.map((billet) => (
+    <li key={billet.id_billet}>
+      <strong>{billet.categorie}</strong> – {billet.prix} € – {billet.quantite} places disponibles
+    </li>
+  ))}
+</ul>
+
