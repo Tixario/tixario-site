@@ -15,7 +15,7 @@ export default function EventPage() {
       const { data, error } = await supabase
         .from('billets')
         .select('*')
-        .eq('evenement', event)
+        .eq('slug', event)
         .eq('disponible', true)
 
       if (error) {
@@ -52,6 +52,12 @@ export default function EventPage() {
           </li>
         ))}
       </ul>
+
+      {billetsFiltres.length === 0 && (
+        <p style={{ marginTop: '20px', fontStyle: 'italic' }}>
+          Aucun billet disponible pour cet événement.
+        </p>
+      )}
     </div>
   )
 }
