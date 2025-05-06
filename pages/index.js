@@ -1,27 +1,25 @@
 import Link from 'next/link'
+import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabaseClient'
 
-export async function getStaticProps() {
-  const { data, error } = await supabase.from('billets').select('slug, evenement')
+export default function Home() {
+  const [evenements, setEvenements] = useState([])
 
-  if (error) {
-    console.error('Erreur de chargement des événements :', error)
-    return { props: { evenements: [] } }
-  }
+  useEffect(() => {
+    async function fetchEvenements() {
+      const { data, error } = await supabase.from('billets').select('slug, evenement')
 
-  // Supprimer les doublons par slug
-  const slugsUniques = Array.from(
-    new Map(data.map((e) => [e.slug, e])).values()
-  )
-
-  return {
-    props: {
-      evenements: slugsUniques
+      if (error) {
+        console.error('Erreur chargement événements:', error)
+      } else {
+        const uniques = Array.from(new Map(data.map(e => [e.slug, e])).values())
+        setEvenements(uniques)
+      }
     }
-  }
-}
 
-export default function Home({ evenements }) {
+    fetchEvenements()
+  }, [])
+
   return (
     <div style={{ padding: '40px' }}>
       <h1>🎟️ Bienvenue sur Tixario</h1>
