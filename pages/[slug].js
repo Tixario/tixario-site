@@ -1,67 +1,47 @@
-import { useRouter } from 'next/router'
-import { useEffect, useState } from 'react'
-import { supabase } from '../lib/supabaseClient'
+// app/events/[slug]/page.js
+'use client';
 
-export default function EventPage() {
-  const router = useRouter()
-  const { slug } = router.query
-  const [billets, setBillets] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [filtre, setFiltre] = useState('')
+import { useState, useEffect } from 'react';
+import { supabaseClient } from '../lib/supabaseClient';
 
+export async function generateStaticParams() {
+  const { data } = await supabaseClient
+    .from('billets')
+    .select('slug')
+    .order('created_at', { ascending: false });
+  
+  return {
+    paths: data.map(event => ({
+      params: { slug: event.slug }
+    })),
+    fallback: 'blocking'
+  };
+}
+
+export default function EventPage({ initialData }) {
+  const [event, setEvent] = useState(initialData);
+  
   useEffect(() => {
-    if (!slug) return
-
-    async function fetchBillets() {
-      const { data, error } = await supabase
+    // Optional: fetch fresh data on client-side hydration
+    async function refreshData() {
+      const { data } = await supabaseClient
         .from('billets')
         .select('*')
-        .eq('slug', slug)
-        .eq('disponible', true)
-
-      if (error) {
-        console.error('Erreur chargement billets:', error)
-      } else {
-        setBillets(data)
-      }
-      setLoading(false)
+        .eq('slug', window.location.pathname.split('/').pop())
+        .single();
+      
+      setEvent(data);
     }
-
-    fetchBillets()
-  }, [slug])
-
-  const billetsFiltres = filtre
-    ? billets.filter((b) => b.categorie.toLowerCase().includes(filtre.toLowerCase()))
-    : billets
-
-  if (loading) return <div style={{ padding: '20px' }}>Chargement...</div>
-
+    
+    refreshData();
+  }, []);
+  
+  if (!event) return <div>Loading...</div>;
+  
   return (
-    <div style={{ padding: '20px' }}>
-      <h1>{slug.replace(/-/g, ' ').toUpperCase()}</h1>
-      <p>Choisissez vos billets pour cet événement :</p>
-
-      <input
-        type="text"
-        placeholder="Filtrer par catégorie..."
-        value={filtre}
-        onChange={(e) => setFiltre(e.target.value)}
-        style={{ marginBottom: '20px', padding: '8px' }}
-      />
-
-      <ul>
-        {billetsFiltres.length > 0 ? (
-          billetsFiltres.map((billet) => (
-            <li key={billet.id_billet}>
-              <strong>{billet.categorie}</strong> — {billet.prix} € — {billet.quantite} places dispo
-            </li>
-          ))
-        ) : (
-          <p style={{ marginTop: '20px', fontStyle: 'italic' }}>
-            Aucun billet disponible pour cet événement.
-          </p>
-        )}
-      </ul>
+    <div>
+      <h1>{event.name}</h1>
+      {/* Add ticket details */}
     </div>
-  )
+  );
 }
