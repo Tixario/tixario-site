@@ -1,10 +1,7 @@
-module.exports = {
-  experimental: {
-    appDir: true,
-    runtime: 'nodejs',
-    serverComponents: true
-  },
-  images: {
-    domains: ['your-domain.com'] // Add your domain
-  }
-};
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  reactStrictMode: true,
+  swcMinify: true,
+}
+
+module.exports = nextConfig
