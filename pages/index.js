@@ -23,7 +23,7 @@ export default function Home() {
   return (
     <div style={{ padding: '40px' }}>
       <h1>🎟️ Bienvenue sur Tixario</h1>
-      <p>Sélectionnez un événement ci-dessous :</p>
+      <p>Sélectionnez un événement :</p>
 
       <ul style={{ marginTop: '30px' }}>
         {evenements.map((e) => (
@@ -39,3 +39,4 @@ export default function Home() {
     </div>
   )
 }
+
