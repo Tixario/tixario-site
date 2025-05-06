@@ -35,6 +35,7 @@ setBillets(data)
 
  return (
   <div className="max-w-4xl mx-auto p-6">
+    <div className="bg-red-500 text-white p-4 mb-6">Test visuel</div>
     <h1 className="text-3xl font-bold mb-2">AC/DC Paris – 9 Août 2025</h1>
     <p className="mb-6 text-gray-700">Choisissez vos billets pour ce concert mythique.</p>
 
