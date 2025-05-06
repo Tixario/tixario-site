@@ -5,3 +5,6 @@ export default function Home() {
     </div>
   );
 }
+
+console.log('test redeploy')
+
