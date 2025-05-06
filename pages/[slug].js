@@ -1,47 +1,54 @@
-// app/events/[slug]/page.js
+// pages/[slug].js
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
 import { supabaseClient } from '../lib/supabaseClient';
 
-export async function generateStaticParams() {
-  const { data } = await supabaseClient
-    .from('billets')
-    .select('slug')
-    .order('created_at', { ascending: false });
-  
-  return {
-    paths: data.map(event => ({
-      params: { slug: event.slug }
-    })),
-    fallback: 'blocking'
-  };
-}
+export default function EventPage() {
+  const router = useRouter();
+  const [event, setEvent] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-export default function EventPage({ initialData }) {
-  const [event, setEvent] = useState(initialData);
-  
   useEffect(() => {
-    // Optional: fetch fresh data on client-side hydration
-    async function refreshData() {
+    async function fetchEventData() {
+      const slug = router.query.slug;
+      
+      if (!slug) return;
+      
+      setLoading(true);
       const { data } = await supabaseClient
         .from('billets')
         .select('*')
-        .eq('slug', window.location.pathname.split('/').pop())
+        .eq('slug', slug)
         .single();
-      
+        
       setEvent(data);
+      setLoading(false);
     }
-    
-    refreshData();
-  }, []);
-  
-  if (!event) return <div>Loading...</div>;
-  
+
+    fetchEventData();
+  }, [router.query.slug]);
+
+  if (!router.isReady || loading) return (
+    <div className="container mx-auto py-8">
+      <p>Chargement...</p>
+    </div>
+  );
+
+  if (!event) return (
+    <div className="container mx-auto py-8">
+      <h1>Événement non trouvé</h1>
+    </div>
+  );
+
   return (
-    <div>
-      <h1>{event.name}</h1>
-      {/* Add ticket details */}
+    <div className="container mx-auto py-8">
+      <h1>{event.evenement}</h1>
+      <p>Date: {new Date(event.date).toLocaleDateString('fr-FR')}</p>
+      <p>Catégorie: {event.categorie}</p>
+      <p>Prix: {event.prix} €</p>
+      <p>Quantité disponible: {event.quantite}</p>
     </div>
   );
 }
