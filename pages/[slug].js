@@ -11,7 +11,7 @@ export async function getStaticPaths() {
 
   return {
     paths,
-    fallback: false, // ou 'blocking' si tu veux générer à la volée
+    fallback: 'blocking', // ou 'blocking' si tu veux générer à la volée
   }
 }
 
